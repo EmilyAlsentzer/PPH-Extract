@@ -1,5 +1,6 @@
 import pickle as pkl
 from pathlib import Path
+import argparse
 import json
 import numpy as np
 import re
@@ -11,7 +12,7 @@ sys.path.append('../..')
 import config
 from collections import Counter
 from sklearn.metrics import cohen_kappa_score, f1_score
-pd.options.mode.chained_assignment = None  # default='warn'
+pd.options.mode.chained_assignment = None  
 from evaluate import load
 from annotation_utils import clean_str
 
@@ -133,17 +134,24 @@ def main():
 
     
     # remove annotations for non-delivery notes
-    nondelivery_reports = df.loc[df['label_type'] == 'not a delivery note', 'Report_Number'].tolist()
-    print(f'There are {len(set(nondelivery_reports))} notes that are nondelivery reports')
+    nondelivery_reports = df.loc[df['label_type'] == 'not a delivery note']
+    print(f'There are {len(set(nondelivery_reports["Report_Number"].tolist()))} unique Report Numbers that are nondelivery reports')
     df.loc[df['label_type'] == 'not a delivery note', ['EMPI', 'Report_Number']].to_csv(config.ANNOTATED_DATA_DIR / 'nondelivery_notes.csv', index=False)
-    delivery_annotations = df.loc[~df['Report_Number'].isin(nondelivery_reports)]
+    print(df.head())
+    print('nondelivery', nondelivery_reports.head())
+    print(f'# of annotations prior to filtering out non-delivery reports: {len(df.index)}')
+    merged_df = pd.merge(df, nondelivery_reports, how='outer', on=["EMPI", "Report_Number"], indicator=True, suffixes=('', '_y'))
+    delivery_annotations = merged_df[merged_df['_merge'] == 'left_only'].copy() 
+    delivery_annotations = delivery_annotations[delivery_annotations.columns.drop(list(delivery_annotations.filter(regex='_y')))]
+    delivery_annotations.drop(columns=['_merge'], inplace=True)  
+    print(f'# of annotations prior to filtering out non-delivery reports: {len(delivery_annotations.index)}')
 
     # stats
     num_annotations_per_label = Counter(delivery_annotations['label_type'].tolist())
     print('Annotations for each label: ', num_annotations_per_label)
     num_annotations_per_annotator = Counter(delivery_annotations['annotator'].tolist())
     print('Annotations for each annotator: ', num_annotations_per_annotator)
-    num_annotated_notes_per_annotator = df[['Report_Number', 'EMPI', 'Report_Date_Time']].groupby(df['annotator']).nunique() 
+    num_annotated_notes_per_annotator = df[['Report_Number', 'EMPI']].groupby(df['annotator']).nunique() 
     print('Annotated notes for each annotator: ', num_annotated_notes_per_annotator)
 
     # clean up annotations
@@ -152,7 +160,7 @@ def main():
     delivery_annotations = clean_spans(delivery_annotations,'estimated blood loss')
 
     # save to file
-    delivery_annotations.to_csv(config.ANNOTATED_DATA_DIR / 'processed_annotations.csv', index=False)
+    #delivery_annotations.to_csv(config.ANNOTATED_DATA_DIR / 'processed_annotations.csv', index=False)
 
 
 

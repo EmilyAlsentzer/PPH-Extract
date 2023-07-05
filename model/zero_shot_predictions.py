@@ -32,7 +32,6 @@ sys.path.append('../')
 import config
 from  preprocess.annotation.annotation_utils import clean_str
 from model.data_utils import *
-from preprocess.utils  import get_non_ed_notes
 
 #Huggingface metric
 exact_match_metric = load("exact_match")
