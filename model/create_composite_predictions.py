@@ -130,7 +130,7 @@ ligament_damage_preds = pd.read_csv(config.MODEL_RUN_DIR /'PPH_-_surgical_causes
 create_composite_surgical_pph_predction(save_fname, extension_preds, artery_damage_preds, ligament_damage_preds)
 
 # unlabelled predictions
-dataset='model_predicted_PPH' #'testround2' #'test' test_with_pph_icd_only testround3
+dataset='model_predicted_PPH'
 save_fname = config.MODEL_RUN_DIR / 'PPH_-_surgical_causes' / f'zero_shot_preds_PPH - surgical causes_model_xxl_combined_surgical_PPH_{dataset}_unabelled'
 extension_preds = pd.read_csv(config.MODEL_RUN_DIR / 'PPH_-_surgical_causes' / f'zero_shot_preds_PPH - surgical causes_model_xxl_extension_{dataset}_unlabelled.csv')
 print('lengths', len(extension_preds.index), len(extension_preds.drop_duplicates().index))
