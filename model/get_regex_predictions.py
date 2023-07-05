@@ -12,8 +12,8 @@ sys.path.append('../')
 
 # our imports
 import config
-from model.accelerate_zero_shot import calc_metrics, calc_ie_metrics
-from model.accelerate_zero_shot import clean_predictions
+from model.zero_shot_predictions import calc_metrics, calc_ie_metrics
+from model.zero_shot_predictions import clean_predictions
 from model.data_utils import *
 from preprocess.annotation.annotation_utils import clean_str
 
@@ -49,6 +49,14 @@ label_to_regex_map = {
     'estimated blood loss': r'(?:(?:ebl|pph|hemorrhage|blood loss).{0,10}?([0-9]{3,5}|one|two|three|four|five|six) ?(?:ml|liters| l |cc)?)|(?:([0-9]{3,5}|one|two|three|four|five|six) ?(?:ml|liters| l |cc)?.{0,10}?(?:ebl|pph|hemorrhage|blood loss))|(?: ([0-9])(?![0-9]) (?:liters| l )?.{0,5}?(?:ebl|pph|hemorrhage|blood loss))|(?:ebl|pph|hemorrhage|blood loss).{0,5}?(?: ([0-9])(?![0-9]) ?(?:liters| l )?)'
 }
 
+'''
+python get_regex_predictions.py \
+    --label c-section \
+    --dataset_type round_1 \
+    --input_filename PATH_TO_INPUT_CSV within config.ANNOTATED_DATA_DIR \
+    --output_filename FULL_PATH_TO_OUTPUT_PREDS_AND_METRICS (exclude .csv and .json, which will be added automatically)
+'''
+
 def main():
     parser = argparse.ArgumentParser(description='Extract PPH information with regexes')
     parser.add_argument('--label', type=str) 
@@ -71,7 +79,7 @@ def main():
     print(f'There are {len(notes.index)} notes')
 
     # get save filename
-    if dataset_type != None: output_filename = Path(str(args.output_filename ) + '_' + dataset_type)
+    if args.dataset_type != None: output_filename = Path(str(args.output_filename ) + '_' + args.dataset_type)
     else: output_filename = args.output_filename
     
     # assign predictions via regex
