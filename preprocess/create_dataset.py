@@ -8,8 +8,32 @@ import sys
 sys.path.append('../..')
 sys.path.append('..')
 import config
-from utils import get_non_ed_notes
+from utils import *
 
+def get_non_ed_notes(verbose=False):
+    '''
+    Get all discharge summary notes that are not ED notes
+    '''
+    df = get_notes(verbose=verbose)
+    original_n_notes = len(df.index)
+    original_n_patients = len(df["EMPI"].unique())
+    if verbose: 
+        print('STEP 1 Complete: Read in Notes from RPDR')
+        print(f'There are {original_n_notes} total notes to format for {original_n_patients} unique empi IDs')
+        print('--------------')
+
+
+    # filter out ED notes
+    df = df.loc[df['Report_Description'] != 'ED Observation Discharge Summary']
+    df = df.loc[df['Report_Description'] != 'ED Discharge Summary']
+    if verbose: 
+        print('Step 2 Complete: Filtered out ED Discharge summaries')
+        print(f'There are now {len(df.index)} total notes to format for {len(df["EMPI"].unique())} unique empi IDs after filtering out ED notes')
+        print(f'There are now {len(df[["Report_Number", "EMPI"]].drop_duplicates())} unique EMPI/Report Numbers. {len(df[["Report_Number", "EMPI", "Report_Date_Time"]].drop_duplicates())} unique EMPI/Report Numbers/Report Time')
+        print(f'We removed {original_n_notes-len(df.index)} notes for {original_n_patients-len(df["EMPI"].unique())} patients.')
+        print('--------------')
+
+    return df
 
 def get_landd_by_regex(df):
 
@@ -25,13 +49,10 @@ def get_landd_by_regex(df):
 
 def main():
     # get non-ED, pre 2015 RPDR notes for women with a pregnancy
-    df = get_non_ed_notes(verbose=True, pre_05_2015=True)
+    df = get_non_ed_notes(verbose=True)
     
-    if (config.FILTERED_DATA_DIR /'landd_filtered'/ 'pre_2015_notes' / 'regex_filtered_landd_discharge_summaries.csv').exists():
-        delivery_note_df = pd.read_csv(config.FILTERED_DATA_DIR /'landd_filtered'/ 'pre_2015_notes'  / 'regex_filtered_landd_discharge_summaries.csv')
-    else:
-        delivery_note_df = get_landd_by_regex(df, broad=True)
-        delivery_note_df.to_csv(config.FILTERED_DATA_DIR /'landd_filtered'/ 'pre_2015_notes' / 'regex_filtered_landd_discharge_summaries.csv', index=False)
+    # get L&D notes
+    delivery_note_df = get_landd_by_regex(df, broad=True)
     print('\nStep 3 Complete: Filtered out non-delivery discharge summaries')
     print(f"There are {len(delivery_note_df.index)} notes  for {len(delivery_note_df['EMPI'].unique())} unique EMPI and {len(delivery_note_df['Report_Number'].unique())} unique report numbers")
     print(f'There are {len(delivery_note_df[["Report_Number", "EMPI"]].drop_duplicates())} unique EMPI/Report Numbers. {len(delivery_note_df[["Report_Number", "EMPI", "Report_Date_Time"]].drop_duplicates())} unique EMPI/Report Numbers/Report Time')
