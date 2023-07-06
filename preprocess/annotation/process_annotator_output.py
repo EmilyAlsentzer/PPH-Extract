@@ -161,7 +161,7 @@ def main():
     delivery_annotations = clean_spans(delivery_annotations,'estimated blood loss')
 
     # save to file
-    #delivery_annotations.to_csv(config.ANNOTATED_DATA_DIR / 'processed_annotations.csv', index=False)
+    delivery_annotations.to_csv(config.ANNOTATED_DATA_DIR / 'processed_annotations.csv', index=False)
 
 
 

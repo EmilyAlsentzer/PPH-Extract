@@ -35,9 +35,17 @@ def sample_notes(fname, n_to_sample, annotator_names, sample_name):
     # save the sampled
     for annotator, annotator_notes in zip(annotator_names, chunks):
         annotator_notes.to_csv(config.ANNOTATED_DATA_DIR / 'sampled_notes' / f'{annotator}{sample_name}_sampled_notes.csv', index=False)
+        # NOTE: need to move text files to containerdata/data to actually label them
         format_as_txt(annotator_notes, config.ANNOTATED_DATA_DIR / 'formatted_for_annotator', sample_type = f'{annotator}_notes{sample_name}_' )
 
 
+'''
+python sample_and_format_notes_for_annotation.py \
+    --input_filename filtered_discharge_summary_cohort.csv \
+    --n_sample 100 \
+    --annotators=emily,vesela \
+    --sample_name round1
+'''
 
 def main():
     parser = argparse.ArgumentParser(description='Sample notes and format for Prancer.')

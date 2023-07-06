@@ -411,7 +411,7 @@ def main():
     parser.add_argument('--dataset_type', type=str, default=None, help='Description to include in the output file to describe the run.')
     parser.add_argument('--unlab_filename', type=str, default=None, help='Unlabelled dataset to run on.')
     parser.add_argument('--output_directory', type=str, default = config.MODEL_RUN_DIR, help='Output directory path. Predictions/metrics will be saved to subfolders for each label within this directory.')
-    parser.add_argument('--batch_size', type=int, default=1)
+    parser.add_argument('--batch_size', type=int, default=2)
     parser.add_argument('--max_length', type=int, default=512)
     parser.add_argument('--max_new_tokens', type=int, default=5)
     parser.add_argument('--note_first', action='store_true')

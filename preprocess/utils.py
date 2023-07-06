@@ -40,7 +40,7 @@ def get_notes(filetype = 'Dis', verbose=False, overwrite=False):
     '''
     Read in all RPDR notes
     '''
-    if pre_05_2015 and (config.FILTERED_DATA_DIR / f'all_{filetype}_pre_0501_2015.csv').exists() and not overwrite:
+    if (config.FILTERED_DATA_DIR / f'all_{filetype}_pre_0501_2015.csv').exists() and not overwrite:
         df = pd.read_csv(config.FILTERED_DATA_DIR / f'all_{filetype}_pre_0501_2015.csv', index_col=0)
         print(f'There are {len(df.index)} total {filetype} pre 0501_2015 notes for {len(df["EMPI"].unique())} patients. {len(df[["Report_Number", "EMPI"]].drop_duplicates())} unique EMPI/Report Numbers. {len(df[["Report_Number", "EMPI", "Report_Date_Time"]].drop_duplicates())} unique EMPI/Report Numbers/Report Time')
     else:
