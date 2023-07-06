@@ -1,6 +1,7 @@
 from pathlib import Path 
 
-PROJECT_DIR = PATH_TO_PROJECT_DIR
+#TODO: modify this path to be the path where you want data/results to go
+PROJECT_DIR = Path('/home/ema51')
 
 # Path to model outputs
 MODEL_RUN_DIR = PROJECT_DIR / 'model_runs/PPH' 

@@ -9,12 +9,12 @@ from collections import Counter
 # data utils
 
 
-def prep_data(verbose=False):
+def prep_data(annotations_filepath = 'processed_annotations.csv', notes_filepath = 'filtered_discharge_summary_cohort.csv', verbose=False):
     '''
     Filter notes to only those with annotations & return annotations, filtered notes, and joined annotations+notes
     '''
-    annotations = pd.read_csv(config.ANNOTATED_DATA_DIR / 'processed_annotations.csv')
-    all_notes = pd.read_csv(config.FILTERED_DATA_DIR  / 'filtered_discharge_summary_cohort.csv')
+    annotations = pd.read_csv(config.ANNOTATED_DATA_DIR / annotations_filepath)
+    all_notes = pd.read_csv(config.FILTERED_DATA_DIR  / notes_filepath)
 
     # get notes with annotations
     notes = all_notes.loc[all_notes['Report_Number'].isin(annotations['Report_Number'].tolist())]

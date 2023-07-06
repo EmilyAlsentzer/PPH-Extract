@@ -83,8 +83,9 @@ def annotations_to_df(annotations, annotator_names):
                 annotator = a
 
         empi = re.search(r'empi_([0-9]+)_', fname).group(1)
-        report_id = re.search(r'note_(.+)\.', fname).group(1)
-        
+        report_id = re.search(r'note_(.+)_time', fname).group(1)
+        note_time = re.search(r'time_(.+)\.txt', fname).group(1)
+
         
         with open(str(config.PRANCER_DATA_DIR / fname.replace('.json', '.txt'))) as f:
             report_text = f.read()
@@ -92,7 +93,7 @@ def annotations_to_df(annotations, annotator_names):
             for label, span in zip(a['labels'], a['spans']):
                 assert  len(label['categories']) == 1
                 text_span = report_text[int(span['start']):int(span['end'])]
-                annot_dict = {'EMPI': empi, 'Report_Number': report_id, 'label_type': label['title'], 'label_category': label['categories'][0], 'start': span['start'], 'end': span['end'], 'span':text_span, 'annotator': annotator}
+                annot_dict = {'EMPI': empi, 'Report_Number': report_id, 'Report_Date_Time': note_time, 'label_type': label['title'], 'label_category': label['categories'][0], 'start': span['start'], 'end': span['end'], 'span':text_span, 'annotator': annotator}
                 all_annots.append(annot_dict)
     
     annot_df = pd.DataFrame(all_annots)

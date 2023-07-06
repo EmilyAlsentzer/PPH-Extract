@@ -74,7 +74,16 @@ def main():
     print(f'The process of removing draft/duplicate notes removed {len(delivery_note_df.index) - len(filtered_delivery_note_df.index)} notes for {len(delivery_note_df["EMPI"].unique()) - len(filtered_delivery_note_df["EMPI"].unique())} patients.')
     print('--------------')
     
-    all_notes['Report_Number'] = all_notes['Report_Number'].str.replace('/', '_')
+    # sanitize report numbers
+    filtered_delivery_note_df['Report_Number'] = filtered_delivery_note_df['Report_Number'].str.replace('/', '_')
+    
+    # remove notes containing discharge instructions 
+    filtered_delivery_note_df = filtered_delivery_note_df.loc[~((filtered_delivery_note_df['Report_Text'].str.contains('Discharge Instructions')) & (filtered_delivery_note_df['Report_Text'].str.contains('Please bring these discharge instructions to your follow-up appointments.')))]
+    print(f'The length of filtered_delivery_note_df is {len(filtered_delivery_note_df.index)} after removing discharge instruction notes.')
+
+    # remove notes containing discharge orders 
+    filtered_delivery_note_df = filtered_delivery_note_df.loc[~filtered_delivery_note_df['Report_Text'].str.contains('****** DISCHARGE ORDERS ******',  regex=False)]
+    print(f'The length of filtered_delivery_note_df is {len(filtered_delivery_note_df.index)} after removing discharge orders.')
 
     
     filtered_delivery_note_df.to_csv(config.FILTERED_DATA_DIR  / 'filtered_discharge_summary_cohort.csv', index=False)

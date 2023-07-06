@@ -405,6 +405,8 @@ def main():
     parser.add_argument('--verbose', action='store_true', help='Whether to include verbose output.')
     parser.add_argument('--no_save', action='store_true', help='Whether to forgo saving metrics and predictions to file')
     parser.add_argument('--unlabelled', action='store_true', help='Whether we\'re running on unlabeled data.')
+    parser.add_argument('--annotations_filename', type=str, default=None, help='Annotations dataframe.')
+    parser.add_argument('--all_notes_filename', type=str, default=None, help='All notes dataframe.')
     parser.add_argument('--labeled_filename', type=str, default=None, help='Annotated dataset to run on.')
     parser.add_argument('--dataset_type', type=str, default=None, help='Description to include in the output file to describe the run.')
     parser.add_argument('--unlab_filename', type=str, default=None, help='Unlabelled dataset to run on.')
@@ -455,7 +457,7 @@ def main():
     else: # run on notes with gold-standard annotations
 
         # get data
-        annotations, notes, joined_notes = prep_data()
+        annotations, notes, joined_notes = prep_data(annotations_filepath=args.annotations_filename, notes_filepath=args.all_notes_filename)
         if args.labeled_filename is not None:
             notes = pd.read_csv(config.ANNOTATED_DATA_DIR / args.labeled_filename.replace('/', '_') ) 
             print(f"There are {len(notes.index)}  notes to evaluate for {len(notes['EMPI'].unique())} unique EMPI and {len(notes['Report_Number'].unique())} unique report numbers")
