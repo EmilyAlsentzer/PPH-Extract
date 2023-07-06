@@ -1,7 +1,7 @@
 # PPH-Extract
 
 ## Overview
-This repository contains the code for the paper ["Zero-shot Interpretable Phenotyping of Postpartum Hemorrhage Using Large Language Models"]([url](https://www.medrxiv.org/content/10.1101/2023.05.31.23290753v1)). While we unfortunately cannot release the data used in the paper because it contains protected health information, we release the code base, which includes all prompts we use in our experiments.
+This repository contains the code for the paper ["Zero-shot Interpretable Phenotyping of Postpartum Hemorrhage Using Large Language Models"](https://www.medrxiv.org/content/10.1101/2023.05.31.23290753v1). While we unfortunately cannot release the data used in the paper because it contains protected health information, we release the code base, which includes all prompts we use in our experiments.
 
 ## Installation
 
